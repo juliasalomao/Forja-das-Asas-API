@@ -1,0 +1,11 @@
+{
+    "name": "julia/forja-das-assas-composer",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Julia\\ForjaDasAssasComposer\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
