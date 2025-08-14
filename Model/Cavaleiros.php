@@ -5,7 +5,7 @@ require_once __DIR__ . '/Connection.php';
 
 use PDO;
 
-class User
+class Cavaleiros
 {
     public static function getAll()
     {

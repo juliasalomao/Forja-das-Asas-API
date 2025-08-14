@@ -1,61 +1,77 @@
 <?php
 namespace Controller;
 
-require_once __DIR__ . '/../Model/Cavaleiros.php';
+require_once __DIR__ . 
+'/../Model/Cavaleiros.php';
 
-use Model\User;
+use Model\Cavaleiros;
 
 class CavaleirosController
 {
-    public static function handleRequest()
+    public function getAll()
     {
-        header('Content-Type: application/json; charset=utf-8');
+        $cavaleiros = Cavaleiros::getAll();
+        if ($cavaleiros) {
+            http_response_code(200 );
+            echo json_encode($cavaleiros);
+        } else {
+            http_response_code(404 );
+            echo json_encode(["message" => "Nenhum cavaleiro encontrado"]);
+        }
+    }
 
-        $method = $_SERVER['REQUEST_METHOD'];
-        $path = $_GET['path'] ?? '';
+    public function getById($id)
+    {
+        $cavaleiro = Cavaleiros::getById($id);
+        if ($cavaleiro) {
+            http_response_code(200 );
+            echo json_encode($cavaleiro);
+        } else {
+            http_response_code(404 );
+            echo json_encode(["message" => "Cavaleiro não encontrado"]);
+        }
+    }
 
-       
-        if ($path === 'cavaleiros') {
-            switch ($method) {
-                case 'GET':
-                    if (isset($_GET['id'])) {
-                        echo json_encode(User::getById($_GET['id']));
-                    } else {
-                        echo json_encode(User::getAll());
-                    }
-                    break;
-
-                case 'POST':
-                    $data = json_decode(file_get_contents('php://input'), true);
-                    echo json_encode(['success' => User::create($data)]);
-                    break;
-
-                case 'PUT':
-                    if (!isset($_GET['id'])) {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'ID não fornecido']);
-                        return;
-                    }
-                    $data = json_decode(file_get_contents('php://input'), true);
-                    echo json_encode(['success' => User::update($_GET['id'], $data)]);
-                    break;
-
-                case 'DELETE':
-                    if (!isset($_GET['id'])) {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'ID não fornecido']);
-                        return;
-                    }
-                    echo json_encode(['success' => User::delete($_GET['id'])]);
-                    break;
-
-                default:
-                    http_response_code(405);
-                    echo json_encode(['error' => 'Método não permitido']);
+    public function create($data)
+    {
+        if (isset($data["nome"]) && isset($data["patente"]) && isset($data["elemento"])) {
+            if (Cavaleiros::create($data)) {
+                http_response_code(201 );
+                echo json_encode(["message" => "Cavaleiro criado com sucesso"]);
+            } else {
+                http_response_code(500 );
+                echo json_encode(["message" => "Erro ao criar cavaleiro"]);
             }
         } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Rota não encontrada']);
+            http_response_code(400 );
+            echo json_encode(["message" => "Dados inválidos"]);
+        }
+    }
+
+    public function update($id, $data)
+    {
+        if (isset($data["nome"]) && isset($data["patente"]) && isset($data["elemento"])) {
+            if (Cavaleiros::update($id, $data)) {
+                http_response_code(200 );
+                echo json_encode(["message" => "Cavaleiro atualizado com sucesso"]);
+            } else {
+                http_response_code(500 );
+                echo json_encode(["message" => "Erro ao atualizar cavaleiro"]);
+            }
+        } else {
+            http_response_code(400 );
+            echo json_encode(["message" => "Dados inválidos"]);
+        }
+    }
+
+    public function delete($id)
+    {
+        if (Cavaleiros::delete($id)) {
+            http_response_code(200 );
+            echo json_encode(["message" => "Cavaleiro excluído com sucesso"]);
+        } else {
+            http_response_code(500 );
+            echo json_encode(["message" => "Erro ao excluir cavaleiro"]);
         }
     }
 }

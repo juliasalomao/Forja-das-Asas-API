@@ -6,5 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Julia\\ForjaDasAssasComposer\\' => array($baseDir . '/src'),
+    'Controller\\' => array($baseDir . '/Controller'),
+    'Model\\' => array($baseDir . '/Model'),
+    'Julia\\ForjaDasAssasComposer\\' => array($baseDir . '/src'), // Esta linha pode ou não estar presente, dependendo se você tem código em 'src'
 );

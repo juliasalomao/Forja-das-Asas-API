@@ -5,7 +5,8 @@ use PDO;
 use PDOException;
 
 // Inclui as configurações
-require_once __DIR__ . '/../Config/configuration.php';
+require_once __DIR__ . 
+'/../Config/configuration.php';
 
 class Connection
 {
