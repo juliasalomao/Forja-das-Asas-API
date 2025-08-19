@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . 
+'/vendor/autoload.php';
 
 use Controller\CavaleirosController;
 
@@ -11,27 +12,17 @@ $id = $_GET['id'] ?? null;
 
 $controller = new CavaleirosController();
 
-if ($path === '') {
-    echo json_encode([
-        'mensagem' => 'Bem-vindo à API Forja das Asas!',
-        'endpoints_disponiveis' => [
-            '/?path=cavaleiros' => 'Lista todos os cavaleiros (GET)',
-            '/?path=cavaleiros&id={id}' => 'Obtém um cavaleiro específico (GET)',
-            '/?path=cavaleiros' => 'Cria um novo cavaleiro (POST)',
-            '/?path=cavaleiros&id={id}' => 'Atualiza um cavaleiro (PUT)',
-            '/?path=cavaleiros&id={id}' => 'Deleta um cavaleiro (DELETE)'
-        ]
-    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-if ($path === 'cavaleiros') {
+// Se a rota for 'cavaleiros' OU a rota estiver vazia (URL base)
+if ($path === 'cavaleiros' || $path === '') {
     switch ($method) {
         case 'GET':
-            if ($id) {
-                $controller->getById($id);
-            } else {
+            // Se a rota estiver vazia, chama getAll() para listar todos os cavaleiros
+            // Se houver um ID, chama getById()
+            // Caso contrário (path é 'cavaleiros' mas sem ID), também chama getAll()
+            if ($path === '' || !$id) {
                 $controller->getAll();
+            } else {
+                $controller->getById($id);
             }
             break;
 
@@ -50,11 +41,13 @@ if ($path === 'cavaleiros') {
             break;
 
         default:
-            http_response_code(405);
+            http_response_code(405 );
             echo json_encode(['error' => 'Método não permitido']);
             break;
     }
 } else {
-    http_response_code(404);
+    // Se a rota não for 'cavaleiros' e não estiver vazia, retorna 404
+    http_response_code(404 );
     echo json_encode(['error' => 'Rota não encontrada']);
 }
+
